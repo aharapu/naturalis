@@ -9,4 +9,6 @@ export interface InputProps {
   disabled?: boolean;
   placeholder?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
+  isLoading?: boolean;
+  isDirty?: boolean;
 }
