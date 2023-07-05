@@ -19,9 +19,14 @@ function pretendMakeRequest() {
   });
 }
 
+// TODO -> test changing color in the middle of another color change
+
 // todo -> create a custom hook that exposes an 'onDebouncedChange' function
 //    and returns the input variants as well as the loading state
 //    ? the hook should also handle the request cancellation
+//    IDEA -> it should require a function that returns a promise -> so it can be wrapped in a cancellation promise
+//            and if an additional abort controller is passed in, it can be used to cancel the request
+//    ? how to handle cancelaltions for websockets?
 export const Primary: Story = (args) => {
   // todo -> rename to dirty
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +36,10 @@ export const Primary: Story = (args) => {
   const isTyping = useRef(false);
   let timeout = useRef<ReturnType<typeof setTimeout>>();
 
+  // TODO -> create a queue of variants to show,
+  // to make sure they stay displayed for a certain minimum amount of time
+  // and to make sure they don't overlap
+  // ! different variants could have different minimum display times
   const showSuccess = () => {
     setIsSuccess(true);
     setTimeout(() => {
