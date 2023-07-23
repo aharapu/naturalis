@@ -1,6 +1,6 @@
 import React, { FC, Fragment } from "react";
 import styled from "styled-components";
-import { InputProps } from "./Input.types";
+import { InputProps, InputVariant } from "./Input.types";
 
 const StyledInput = styled.input<InputProps>`
   height: 40px;
@@ -26,10 +26,9 @@ const StyledMessage = styled.div<InputProps>`
   padding-top: 4px;
 `;
 
-const StyledText = styled.p<InputProps>`
+const StyledText = styled.p<{ disabled?: boolean; error?: boolean }>`
   margin: 0px;
-  color: ${(props) =>
-    props.disabled ? "#e4e3ea" : props.error ? "#a9150b" : "#080808"};
+  color: ${(props) => getStyledTextColor({ disabled: !!props.disabled, error: !!props.error })};
 `;
 
 const Input: FC<InputProps> = ({
@@ -37,20 +36,17 @@ const Input: FC<InputProps> = ({
   disabled,
   label,
   message,
-  error = false,
-  success = false,
   onChange,
   placeholder,
-  isLoading = false,
-  isDirty = false,
-  ...props
+  loading = false,
+  variant = InputVariant.IDLE,
 }) => {
-  const borderColor = getBorderColor({ isDirty, error, success });
+  const borderColor = getBorderColor(variant);
 
   return (
     <Fragment>
       <StyledLabel>
-        <StyledText disabled={disabled} error={error}>
+        <StyledText disabled={disabled} error={variant === InputVariant.ERROR}>
           {label}
         </StyledText>
       </StyledLabel>
@@ -64,15 +60,12 @@ const Input: FC<InputProps> = ({
         type="text"
         onChange={onChange}
         disabled={disabled}
-        error={error}
-        success={success}
         placeholder={placeholder}
-        {...props}
-      ></StyledInput>
+      />
       <StyledMessage>
-        <StyledText error={error}>{message}</StyledText>
+        <StyledText error={variant === InputVariant.ERROR}>{message}</StyledText>
       </StyledMessage>
-      {isLoading && (
+      {loading && (
         <StyledMessage>
           <StyledText>Loading...</StyledText>
         </StyledMessage>
@@ -83,27 +76,27 @@ const Input: FC<InputProps> = ({
 
 export default Input;
 
-function getBorderColor({
-  isDirty,
-  error,
-  success,
-}: {
-  isDirty: boolean;
-  error: boolean;
-  success: boolean;
-}) {
-  if (success) {
-    return "#0a7023"; // green
-  }
-
-  if (isDirty) {
-    if (error) {
+function getBorderColor(variant: InputVariant) {
+  switch (variant) {
+    case InputVariant.SUCCESS:
+      return "#0a7023"; // green
+    case InputVariant.ERROR:
       return "#a9150b"; // red
-    } else {
-      //yellow
-      return "#f5a623";
-    }
-  } else {
-    return "#353637"; //
+    case InputVariant.IDLE:
+      return "#353637"; // black
+    case InputVariant.DIRTY:
+      return "#f5a623"; // yellow
+    default:
+      return "#353637";
   }
+}
+
+function getStyledTextColor({ disabled, error }: { disabled: boolean; error: boolean }) {
+  if (disabled) {
+    return "#e4e3ea";
+  }
+  if (error) {
+    return "#a9150b";
+  }
+  return "#080808";
 }

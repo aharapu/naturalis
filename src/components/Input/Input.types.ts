@@ -1,14 +1,19 @@
 import { ChangeEventHandler } from "react";
 
+export enum InputVariant {
+  IDLE = "idle",
+  DIRTY = "dirty",
+  SUCCESS = "success",
+  ERROR = "error",
+}
+
 export interface InputProps {
   id?: string;
   label?: string;
-  error?: boolean;
   message?: string;
-  success?: boolean;
   disabled?: boolean;
   placeholder?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
-  isLoading?: boolean;
-  isDirty?: boolean;
+  loading?: boolean;
+  variant?: InputVariant;
 }

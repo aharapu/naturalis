@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import Input from "./Input";
+import { InputVariant } from "./Input.types";
 
 const meta: Meta<typeof Input> = {
   component: Input,
@@ -28,10 +29,8 @@ function pretendMakeRequest() {
 //            and if an additional abort controller is passed in, it can be used to cancel the request
 //    ? how to handle cancelaltions for websockets?
 export const Primary: Story = (args) => {
-  // todo -> rename to dirty
   const [isLoading, setIsLoading] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [variant, setVariant] = useState<InputVariant>(InputVariant.IDLE);
 
   const isTyping = useRef(false);
   let timeout = useRef<ReturnType<typeof setTimeout>>();
@@ -41,35 +40,37 @@ export const Primary: Story = (args) => {
   // and to make sure they don't overlap
   // ! different variants could have different minimum display times
   const showSuccess = () => {
-    setIsSuccess(true);
+    setVariant(InputVariant.SUCCESS);
     setTimeout(() => {
-      setIsSuccess(false);
+      setVariant(InputVariant.IDLE);
     }, 3000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsDirty(true);
-
     // todo -> if a request is already in flight, cancel it
+    if (variant !== InputVariant.DIRTY) setVariant(InputVariant.DIRTY);
 
     if (isTyping.current) {
       console.log("clearing timeout");
       clearTimeout(timeout.current);
     }
 
+    // after 3 seconds of inactivity, make the request
     timeout.current = setTimeout(() => {
       isTyping.current = false;
       setIsLoading(true);
 
       pretendMakeRequest()
         .then(() => {
-          setIsLoading(false);
-          setIsDirty(false);
           showSuccess();
         })
         .catch(() => {
+          setVariant(InputVariant.ERROR);
           // todo -> if it's an abort error, do nothing
           // otherwise, set error state
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }, 3000);
 
@@ -89,47 +90,41 @@ export const Primary: Story = (args) => {
   }, [isLoading]);
 
   return (
-    <Input
-      data-test-id="InputField-id"
-      {...args}
-      onChange={handleChange}
-      isLoading={isLoading}
-      // todo -> repalce dirty with a variant selection 'idle' | 'dirty' | 'success' | 'error'
-      //    variants equating border colors of black, yellow, green, red
-      isDirty={isDirty}
-      success={isSuccess}
-    />
+    <>
+      <Input
+        data-test-id="InputField-id"
+        {...args}
+        gigi="becali"
+        onChange={handleChange}
+        loading={isLoading}
+        variant={variant}
+      />
+      <h5>Input events:</h5>
+      <ol>
+        <li>type something</li>
+      </ol>
+    </>
   );
 };
 
 Primary.args = {
-  error: false,
   disabled: false,
   label: "Primary",
 };
 
-export const Success: Story = (args) => (
-  <Input data-test-id="InputField-id" {...args} />
-);
+export const Success: Story = (args) => <Input data-test-id="InputField-id" {...args} />;
 Success.args = {
-  error: false,
-  success: true,
   disabled: false,
   label: "Success",
 };
 
-export const Error: Story = (args) => (
-  <Input data-test-id="InputField-id" {...args} />
-);
-Error.args = {
-  error: true,
+export const ErrorInput: Story = (args) => <Input data-test-id="InputField-id" {...args} />;
+ErrorInput.args = {
   disabled: false,
-  message: "Error",
+  message: "ErrorInput",
 };
 
-export const Disabled: Story = (args) => (
-  <Input data-test-id="InputField-id" {...args} />
-);
+export const Disabled: Story = (args) => <Input data-test-id="InputField-id" {...args} />;
 Disabled.args = {
   disabled: true,
   label: "Disabled",
