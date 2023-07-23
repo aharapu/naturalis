@@ -2,7 +2,8 @@ import React, { FC, Fragment } from "react";
 import styled from "styled-components";
 import { InputProps, InputVariant } from "./Input.types";
 
-const StyledInput = styled.input<InputProps>`
+// TODO -> properly type all these styled components
+const StyledInput = styled.input<any>`
   height: 40px;
   width: 300px;
   border-style: solid;
@@ -14,13 +15,15 @@ const StyledInput = styled.input<InputProps>`
   }
 `;
 
-const StyledLabel = styled.div<InputProps>`
+// TODO -> properly type all these styled components
+const StyledLabel = styled.div<any>`
   font-size: 14px;
   color: ${(props) => (props.disabled ? "#e4e3ea" : "#080808")};
   padding-bottom: 6px;
 `;
 
-const StyledMessage = styled.div<InputProps>`
+// TODO -> properly type all these styled components
+const StyledMessage = styled.div<any>`
   font-size: 14px;
   color: #a9150b8;
   padding-top: 4px;
@@ -39,6 +42,7 @@ const Input: FC<InputProps> = ({
   onChange,
   placeholder,
   loading = false,
+  value,
   variant = InputVariant.IDLE,
 }) => {
   const borderColor = getBorderColor(variant);
@@ -58,6 +62,7 @@ const Input: FC<InputProps> = ({
         }}
         id={id}
         type="text"
+        value={value}
         onChange={onChange}
         disabled={disabled}
         placeholder={placeholder}
