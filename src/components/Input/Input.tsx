@@ -49,6 +49,24 @@ const Input: FC<InputProps> = ({
 
   return (
     <Fragment>
+      <div
+        style={{
+          width: "50px",
+          height: "50px",
+          border: "2px solid black",
+          position: "relative",
+        }}
+      >
+        <div
+          style={{
+            width: "120px",
+            height: "5px",
+            background: "lightblue",
+            position: "absolute",
+            transform: "translate(-50%, -50%), rotate(45deg)",
+          }}
+        ></div>
+      </div>
       <StyledLabel>
         <StyledText disabled={disabled} error={variant === InputVariant.ERROR}>
           {label}
