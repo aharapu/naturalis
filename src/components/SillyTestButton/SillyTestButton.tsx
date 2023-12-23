@@ -4,7 +4,7 @@ interface SillyTestButtonProps {
   text?: string;
 }
 
-const SillyTestButton: React.FC<SillyTestButtonProps> = ({ text }) => {
+export const SillyTestButton: React.FC<SillyTestButtonProps> = ({ text }) => {
   return (
     <button style={{ width: "50px", height: "50px", backgroundColor: "lightpink", borderRadius: "50%" }}>
       {text ?? "PUSH ME!"}
@@ -12,4 +12,4 @@ const SillyTestButton: React.FC<SillyTestButtonProps> = ({ text }) => {
   );
 };
 
-export default SillyTestButton;
+// export default SillyTestButton;
