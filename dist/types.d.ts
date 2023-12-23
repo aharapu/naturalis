@@ -1,4 +1,4 @@
-import { ChangeEventHandler, ChangeEvent } from 'react';
+import React, { ChangeEventHandler, ChangeEvent } from 'react';
 
 declare enum InputVariant {
     IDLE = "idle",
@@ -28,4 +28,9 @@ declare function useInputProps({ saveChanges }: useInputOptions): {
     loading: boolean;
 };
 
-export { InputProps, InputVariant, useInputProps };
+interface SillyTestButtonProps {
+    text?: string;
+}
+declare const SillyTestButton: React.FC<SillyTestButtonProps>;
+
+export { InputProps, InputVariant, SillyTestButton, useInputProps };
