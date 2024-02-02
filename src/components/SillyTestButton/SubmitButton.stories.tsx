@@ -12,7 +12,7 @@ export default meta;
 
 type Story = StoryObj<typeof SubmitButton>;
 
-export const Secondary: Story = (args) => <SubmitButton {...args} />;
-Secondary.args = {
+export const Ana: Story = (args) => <SubmitButton {...args} />;
+Ana.args = {
     text: "SUBMIT"
 }
